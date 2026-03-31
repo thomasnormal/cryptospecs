@@ -80,7 +80,7 @@ DS60001702Q - 108
 • MSS Peripheral clocks
 3.12.15.2. Functional Description  (Ask a Question)
 Figure 3-40 shows the block diagram of FRQ meter. To measure the frequency, a known clock
-![Figure 3-40: FRQ Meter Block Diagram](figures/figure-008.png)
+![Figure 3-40: FRQ Meter Block Diagram](figures/figure-022.png)
 is applied as a reference clock input. The input clock to be measured is applied to the channel
 counters. The FSM resets all the counters and enables the channel counters for a predefined
 duration generated from the reference counter. Now, the clock frequency can be calculated by

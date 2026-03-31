@@ -13,7 +13,7 @@ MSS and the fabric. There are five FICs in the MSS.
 FICs in PolarFire SoC FPGA are referred as FIC0, FIC1, FIC2, FIC3, and FIC4 as shown in the following
 figure.
 Figure 6-1. FIC Block Diagram
-![Figure 6-1: FIC Block Diagram](figures/figure-031.png)
+![Figure 6-1: FIC Block Diagram](figures/figure-030.png)
 MSS
 APB 32
 Core Complex
@@ -99,7 +99,7 @@ Fabric Interface Controller
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 133
 Figure 6-2. Write and Read Transactions through FIC_0
-![Figure 6-2: Write and Read Transactions through FIC_0](figures/figure-033.png)
+![Figure 6-2: Write and Read Transactions through FIC_0](figures/figure-031.png)
 6.4. Configuring FICs  (Ask a Question)
 FICs can be configured using the Standalone MSS Configurator. For more information, see
 Standalone MSS Configurator User Guide for PolarFire SoC.

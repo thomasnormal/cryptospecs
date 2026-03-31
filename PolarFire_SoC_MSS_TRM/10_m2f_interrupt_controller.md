@@ -49,7 +49,7 @@ Functional Blocks
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 111
 Figure 3-41. M2F Interrupt Controller Block Diagram
-![Figure 3-41: M2F Interrupt Controller Block Diagram](figures/figure-011.png)
+![Figure 3-41: M2F Interrupt Controller Block Diagram](figures/figure-025.png)
 M2F Interrupt Controller
 Interrupt EnableInterrupt 
 Generation

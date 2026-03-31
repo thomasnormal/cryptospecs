@@ -19,7 +19,7 @@ USB OTG controller:
 • Packet Encoding, Decoding, and CRC Block
 • PHY Interfaces
 Figure 3-37. USB OTG Controller
-![Figure 3-37: USB OTG Controller](figures/figure-001.png)
+![Figure 3-37: USB OTG Controller](figures/figure-029.png)
 PHY 
 Interface
 Endpoint and RAM Control

@@ -31,7 +31,7 @@ Interrupts
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 114
 Figure 5-1. Interrupt Scheme
-![Figure 5-1: Interrupt Scheme](figures/figure-014.png)
+![Figure 5-1: Interrupt Scheme](figures/figure-028.png)
 E51
 Hart0
 U54

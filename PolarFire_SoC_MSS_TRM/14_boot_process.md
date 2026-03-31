@@ -65,7 +65,7 @@ found in the pseudo BOOTROM system registers.
 a. The loop will keep executing until the content of the TEMP1 system register remains set to
 zero.
 Figure 7-1. Boot Mode 0
-![Figure 7-1: Boot Mode 0](figures/figure-035.png)
+![Figure 7-1: Boot Mode 0](figures/figure-032.png)
 b. The Core Complex harts will remain executing the pseudo BOOTROM loop until the
 debugger sets the hart's program counters to new values.
 Important: 
@@ -97,7 +97,7 @@ For boot mode 1, the System Controller:
 U_MSS_BOOTCFG configuration data structure held in pNVM.
 3. Releases the Core Complex reset causing all harts to execute the code found in eNVM.
 Figure 7-2. Boot Mode 1
-![Figure 7-2: Boot Mode 1](figures/figure-036.png)
+![Figure 7-2: Boot Mode 1](figures/figure-033.png)
 Important: 
 • The System Controller's pNVM content can only be modified through a
 programming bitstream. The pNVM content is not directly accessible from the
@@ -146,7 +146,7 @@ Boot Process
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 138
 Figure 7-3. Boot Mode 2
-![Figure 7-3: Boot Mode 2](figures/figure-038.png)
+![Figure 7-3: Boot Mode 2](figures/figure-034.png)
 Important: 
 • The sNVM used to store the user boot loader that must be marked as
 ROM in Libero® to avoid it being modified by anything other than a suitable
@@ -189,7 +189,7 @@ figure illustrates how difficult it would be to retrieve the scalar value used i
 to generate points P and Q from base point G. Such a scalar value is used, among other things, as a
 private key in the ECDSA.
 Figure 7-4. Curve Points
-![Figure 7-4: Curve Points](figures/figure-039.png)
+![Figure 7-4: Curve Points](figures/figure-035.png)
 ECDSA is used to generate a certificate containing a signature for a message using a private key. The
 associated public key is then used to authenticate the content of the certificate to check that the
 message has not been tampered with.
@@ -203,7 +203,7 @@ Boot Process
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 140
 Figure 7-5. ECDSA Overview
-![Figure 7-5: ECDSA Overview](figures/figure-040.png)
+![Figure 7-5: ECDSA Overview](figures/figure-036.png)
 Parameter Description
 curve Agreed elliptic curve used for signing and authenticating messages.
 G Base point on the curve. Used to generate other points on the curve though point multiplication. The value of
@@ -278,7 +278,7 @@ Boot Process
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 142
 Figure 7-6. Generating Secure Boot Image
-![Figure 7-6: Generating Secure Boot Image](figures/figure-042.png)
+![Figure 7-6: Generating Secure Boot Image](figures/figure-037.png)
 Two distinct SHA-384 hash values are used to authenticate the User Boot Loader:
 • The SBIC includes a SHA-384 hash of the User Boot Loader executable binary contained in eNVM.
 • A SHA-384 hash (z) of the SBIC content, except the signature, is used to sign the certificate.
@@ -316,7 +316,7 @@ Boot Process
 © 2025 Microchip Technology Inc. and its subsidiaries
 DS60001702Q - 143
 Figure 7-7. 
-![Figure 7-7: Secure Boot Authentication Flow](figures/figure-043.png)
+![Figure 7-7: Secure Boot Authentication Flow](figures/figure-038.png)
 The System Controller causes the RISC-V harts to jump the addresses defined in the SBIC's boot
 vector fields when authentication is successful. If any authentication step fails, the System Controller
 signals a tamper to the FPGA fabric and the User Boot Loader is not executed.

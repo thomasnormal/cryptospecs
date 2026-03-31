@@ -126,7 +126,7 @@ When the SDMA engine stops at the buffer boundary, the SDMA System Address regis
 the next system address of the next data position to be transferred. The SDMA engine restarts the
 transfer when the uppermost byte of the SDMA System Address register is written.
 Figure 3-38. SDMA Block Diagram
-![Figure 3-38: SDMA Block Diagram](figures/figure-004.png)
+![Figure 3-38: SDMA Block Diagram](figures/figure-018.png)
 eMMC/SD Controller
 System Memory
 SDMA System Address
@@ -155,7 +155,7 @@ set to 0) in 32-bit Addressing mode, and to the 8 byte boundary (the 3 LSbs are 
 Addressing mode. The size of each data page is arbitrary and it depends on neither the previous nor
 the successive page size. It can also be different from the SD card transfer block size (SRS01.TBS).
 Figure 3-39. ADMA2 Block Diagram
-![Figure 3-39: ADMA2 Block Diagram](figures/figure-005.png)
+![Figure 3-39: ADMA2 Block Diagram](figures/figure-019.png)
 eMMC/SD Controller
 Page Length
 ADMA2 Engine
