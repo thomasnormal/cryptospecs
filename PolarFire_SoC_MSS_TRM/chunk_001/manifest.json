@@ -1,0 +1,9 @@
+{
+  "files": [
+    "00_front_matter.md",
+    "01_polarfire_soc_mss_features.md",
+    "02_detailed_block_diagram.md",
+    "03_functional_blocks.md"
+  ],
+  "page_count": 50
+}

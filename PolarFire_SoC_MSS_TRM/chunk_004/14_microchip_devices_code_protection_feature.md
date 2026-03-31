@@ -1,0 +1,8 @@
+# Microchip Devices Code Protection Feature
+
+Note the following details of the code protection feature on Microchip products:
+
+- Microchip products meet the specifications contained in their particular Microchip Data Sheet.
+- Microchip believes that its family of products is secure when used in the intended manner, within operating specifications, and under normal conditions.
+- Microchip values and aggressively protects its intellectual property rights. Attempts to breach the code protection features of Microchip products are strictly prohibited and may violate the Digital Millennium Copyright Act.
+- Neither Microchip nor any other semiconductor manufacturer can guarantee the security of its code. Code protection does not mean that we are guaranteeing the product is “unbreakable”. Code protection is constantly evolving. Microchip is committed to continuously improving the code protection features of our products.

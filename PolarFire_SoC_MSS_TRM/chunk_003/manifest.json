@@ -1,0 +1,17 @@
+{
+  "files": [
+    "01_usb_otg_controller.md",
+    "02_emmc_sd_sdio.md",
+    "03_frq_meter.md",
+    "04_m2f_interrupt_controller.md",
+    "05_system_registers.md",
+    "06_interrupts.md",
+    "07_fabric_interface_controller.md",
+    "08_boot_process.md",
+    "09_resets.md",
+    "10_clocking.md",
+    "11_mss_memory_map.md",
+    "12_acronyms.md"
+  ],
+  "page_count": 50
+}
