@@ -11,63 +11,78 @@ Reference specs for AHB/AXI MMIO crypto accelerator IP blocks. Collected to stud
 - Front-door access through UVM RAL model
 - Multi-algorithm support (AES-ECB/CBC/CTR/GCM/CCM, SHA, HMAC)
 
+## Directory layout
+
+Specs are organized by vendor. Each vendor directory contains PDF specs and optionally a markdown conversion of key documents.
+
 ---
 
-## Specs
+## microchip/ — PolarFire SoC (strongest overall match)
 
-### Microchip PolarFire SoC (strongest overall match)
+| File | Description |
+|------|-------------|
+| `PolarFire_SoC_MSS_TRM.pdf` | **MSS Technical Reference Manual (~158 pages).** AXI Switch feeding AXI-to-AHB bridge with UserCrypto as a peripheral. Closest match to the ~150-page AHB+AXI bridged crypto subsystem target. |
+| `PolarFire_SoC_MSS_TRM/` | Markdown conversion of the TRM (22 chapters, 38 figures). |
+| `AC464_UserCrypto_AppNote.pdf` | **Implementing Data Security Using User Cryptoprocessor (AC464, ~39 pages).** Athena TeraFire EXP-F5200B crypto core with AHB-Lite slave + AHB-Lite master DMA. AES (ECB/CBC/CTR/GCM), SHA, HMAC, elliptic curve, SCA-resistant modes. |
+| `PolarFire_Security_User_Guide.pdf` | Security architecture: UserCrypto, secure boot, anti-tamper, key management. |
+| `PolarFire_SoC_Architecture.pdf` | SoC-level architecture: RISC-V MSS, fabric interfaces, security features. |
+| `PolarFire_SoC_Product_Overview.pdf` | High-level product overview. |
+| `PolarFire_System_Services_User_Guide.pdf` | System services including crypto service APIs. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `PolarFire_SoC_MSS_TRM.pdf` | ~158 | **MSS Technical Reference Manual.** Shows AXI Switch feeding AXI-to-AHB bridge with UserCrypto as a peripheral. Closest match to the ~150-page AHB+AXI bridged crypto subsystem target. |
-| `AC464_UserCrypto_AppNote.pdf` | ~39 | **Implementing Data Security Using User Cryptoprocessor (AC464).** Describes the Athena TeraFire EXP-F5200B crypto core with AHB-Lite slave for control and AHB-Lite master for DMA. Covers AES (ECB/CBC/CTR/GCM), SHA, HMAC, elliptic curve, and SCA-resistant modes. |
-| `PolarFire_Security_User_Guide.pdf` | — | Security architecture overview: UserCrypto, secure boot, anti-tamper, key management. |
-| `PolarFire_SoC_Architecture.pdf` | — | SoC-level architecture document covering RISC-V MSS, fabric interfaces, and security features. |
-| `PolarFire_SoC_Product_Overview.pdf` | — | High-level product overview of the PolarFire SoC FPGA family. |
-| `PolarFire_System_Services_User_Guide.pdf` | — | System services including crypto service APIs for the MSS. |
+## espressif/ — ESP32-P4 (best freely available register-level detail)
 
-### Espressif ESP32-P4 (best freely available register-level detail)
+| File | Description |
+|------|-------------|
+| `ESP32-P4_TRM.pdf` | **Technical Reference Manual (~1400 pages).** Full register maps for AES, SHA, HMAC, ECC accelerators. Both GDMA-AHB and GDMA-AXI controllers. DMA-AES supports ECB/CBC/OFB/CTR/CFB/GCM. |
+| `ESP32-P4_TRM_v1.3.pdf` | Same TRM for chip revision v1.3. |
+| `ESP32-P4_Datasheet_v1.3.pdf` | Chip datasheet (~93 pages). GDMA-AHB/AXI and crypto accelerator summary. |
+| `ESP32-P4_Datasheet_prelim.pdf` | Earlier preliminary datasheet. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `ESP32-P4_TRM.pdf` | ~1400 | **Technical Reference Manual.** Full register maps for AES, SHA, HMAC, ECC accelerators. Documents both GDMA-AHB and GDMA-AXI controllers. DMA-AES mode supports ECB/CBC/OFB/CTR/CFB/GCM. The most complete single document for studying MMIO crypto register layouts. |
-| `ESP32-P4_TRM_v1.3.pdf` | ~1400 | Same TRM for chip revision v1.3. |
-| `ESP32-P4_Datasheet_v1.3.pdf` | ~93 | Chip datasheet. Summarizes GDMA-AHB/AXI and crypto accelerator features at a high level. |
-| `ESP32-P4_Datasheet_prelim.pdf` | ~93 | Earlier preliminary version of the datasheet. |
+## dialog/ — Dialog Semiconductor (AHB crypto peripherals)
 
-### Realtek Ameba-Z II (descriptor-style crypto DMA)
+| File | Description |
+|------|-------------|
+| `da14683_datasheet.pdf` | DA14683 datasheet. AHB-based crypto engine (AES, HASH). |
+| `da1469x_datasheet.pdf` | DA1469x datasheet. AHB-connected crypto accelerator with DMA. |
+| `da1459x_datasheet.pdf` | DA1459x datasheet. Crypto peripheral documentation. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `Ameba-ZII_Application_Note.pdf` | — | **AN0500 Application Note.** Documents the security engine with source/destination descriptor registers for HMAC key, cipher key, IV, AAD, and plaintext buffers. Closest public match to the IV_ADDR/AAD_ADDR/SRC_ADDR/DST_ADDR register style. |
-| `Ameba-ZII_DEV_User_Manual.pdf` | — | Dev board user manual with peripheral overview. |
+## nxp/ — NXP (DMA + crypto subsystem reference)
 
-### Inside Secure / Rambus SafeXcel (DMA ring-mode packet engines)
+| File | Description |
+|------|-------------|
+| `imx23_rm.pdf` | **i.MX23 Reference Manual.** DCP (Data Co-Processor) with AES/SHA, DMA-based crypto engine with channel-based descriptor architecture. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `SafeXcel_EIP-93_Brochure.pdf` | ~3 | **EIP-93 Inline Packet Engine.** Low gate count crypto accelerator with autonomous ring-mode DMA operation. AES (including CCM), SHA, HMAC. AHB interface option. Reads/writes packet data and descriptors from host memory via DMA. |
-| `SafeXcel_EIP-97_Brochure.pdf` | ~3 | **EIP-97 Look-Aside Packet Engine.** Higher-performance variant for multi-core SoCs. Multiple ring interfaces, broader algorithm support. |
+## realtek/ — Ameba-Z II (descriptor-style crypto DMA)
 
-### Synopsys SPAcc (configurable protocol accelerator)
+| File | Description |
+|------|-------------|
+| `Ameba-ZII_Application_Note.pdf` | **AN0500 Application Note.** Security engine with source/destination descriptor registers for HMAC key, cipher key, IV, AAD, and plaintext buffers. Closest public match to IV_ADDR/AAD_ADDR/SRC_ADDR/DST_ADDR register style. |
+| `Ameba-ZII_DEV_User_Manual.pdf` | Dev board user manual with peripheral overview. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `Synopsys_SecurityIP_Brochure.pdf` | ~8 | **Security IP portfolio brochure.** Covers the SPAcc family which supports AEAD (CCM, GCM, ChaCha20-Poly1305), SHAKE128/256, XOF, scatter/gather DMA, and selectable AMBA AXI or AHB interfaces. The XOF support is relevant if your spec includes XOF_LEN registers. |
+## rambus_insidesecure/ — SafeXcel (DMA ring-mode packet engines)
 
-### CAST (crypto IP core briefs)
+| File | Description |
+|------|-------------|
+| `SafeXcel_EIP-93_Brochure.pdf` | **EIP-93 Inline Packet Engine (~3 pages).** Low gate count, autonomous ring-mode DMA, AES (incl. CCM), SHA, HMAC. AHB interface option. |
+| `SafeXcel_EIP-97_Brochure.pdf` | **EIP-97 Look-Aside Packet Engine (~3 pages).** Higher-performance variant for multi-core SoCs. |
 
-| File | Pages | Description |
-|------|-------|-------------|
-| `CAST_AES-CCM_Brief_ASIC.pdf` | ~2 | **AES-CCM core brief (ASIC target).** Describes a standalone AES-CCM authenticated encryption engine with HDL deliverables and testbench. Core-level only, not a full bus-attached DMA subsystem. |
-| `CAST_AES-CCM_Brief_Intel.pdf` | ~2 | Same core targeting Intel (Altera) FPGAs. |
+## synopsys/ — SPAcc (configurable protocol accelerator)
+
+| File | Description |
+|------|-------------|
+| `Synopsys_SecurityIP_Brochure.pdf` | **Security IP portfolio brochure (~8 pages).** SPAcc with AEAD (CCM, GCM, ChaCha20-Poly1305), SHAKE/XOF, scatter/gather DMA, selectable AXI or AHB interfaces. |
+
+## cast/ — Crypto IP core briefs
+
+| File | Description |
+|------|-------------|
+| `CAST_AES-CCM_Brief_ASIC.pdf` | **AES-CCM core brief (~2 pages, ASIC target).** Standalone authenticated encryption engine, HDL deliverables and testbench. |
+| `CAST_AES-CCM_Brief_Intel.pdf` | Same core targeting Intel (Altera) FPGAs. |
 
 ---
 
 ## Not publicly available
 
-These specs match the target architecture closely but require NDA, sales contact, or gated access:
-
-- **Rambus CRYPT-IP-120 (EIP-120)** — AES + SHA-2 + DMA with AHB master/slave; AXI available on request. Contact [Rambus](https://www.rambus.com/security/crypto-accelerator-hardware-cores/basic-crypto-blocks/crypt-ip-120/).
+- **Rambus CRYPT-IP-120 (EIP-120)** — AES + SHA-2 + DMA with AHB master/slave; AXI on request. Contact [Rambus](https://www.rambus.com/security/crypto-accelerator-hardware-cores/basic-crypto-blocks/crypt-ip-120/).
 - **Synopsys SPAcc full datasheet** — Gated behind [Synopsys DesignWare portal](https://www.synopsys.com/dw/ipdir.php?ds=security-protocol-accelerator).
-- **PolarFireSoC_Register_Map.zip** — Microchip's download portal is broken; HTML version browsable at [MSU mirror](https://web.pa.msu.edu/people/edmunds/Disco_Kraken/PolarFire_SoC_Register_Map/PF_SoC_RegMap/pfsoc_regmap.htm).
+- **PolarFireSoC_Register_Map.zip** — Microchip download portal broken; HTML version at [MSU mirror](https://web.pa.msu.edu/people/edmunds/Disco_Kraken/PolarFire_SoC_Register_Map/PF_SoC_RegMap/pfsoc_regmap.htm).
