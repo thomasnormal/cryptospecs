@@ -235,13 +235,13 @@ The eNVM consists of four segments mapped into a contiguous 128 KB address space
 
 **Table 3-66. eNVM Segments and Addresses**
 
-| Bus | Size | Access | Offset | Description | Address |
-| --- | --- | --- | --- | --- | --- |
-| C-Bus | 512 Bytes | RW | 0x00000000 | Configuration | 0x2020000 |
-| R-Bus | 128 K Bytes | 8K | RO | 0x00000000 | Sector 2 | 0x2022000 |
-| R-Bus | 128 K Bytes | 56K | RO | 0x00002000 | Sector 0 | 0x20222000 |
-| R-Bus | 128 K Bytes | 56K | RO | 0x00010000 | Sector 1 | 0x20230000 |
-| R-Bus | 128 K Bytes | 8K | RO | 0x0001E000 | Sector 3 | 0x2023E000 |
+| Bus | Total Size | Segment | Access | Offset | Description | Address |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-Bus | 512 Bytes | — | RW | 0x00000000 | Configuration | 0x2020000 |
+| R-Bus | 128 K Bytes | 8K | RO | 0x00000000 | Sector 2 | 0x20220000 |
+| R-Bus | | 56K | RO | 0x00002000 | Sector 0 | 0x20222000 |
+| R-Bus | | 56K | RO | 0x00010000 | Sector 1 | 0x20230000 |
+| R-Bus | | 8K | RO | 0x0001E000 | Sector 3 | 0x2023E000 |
 
 #### 3.12.4.2.6. eNVM Access Capabilities
 

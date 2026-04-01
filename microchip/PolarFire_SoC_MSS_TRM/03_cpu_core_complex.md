@@ -305,10 +305,38 @@ Shutdown controls are provided for the 2 MB L2 cache memory with configuration s
 
 | Bank | L2_SHUTDOWN_CR[3] | L2_SHUTDOWN_CR[2] | L2_SHUTDOWN_CR[1] | L2_SHUTDOWN_CR[0] |
 | --- | --- | --- | --- | --- |
-| Bank 0 | cc_ram_24 .. cc_ram_31 / cc_ram_16 .. cc_ram_23 / cc_ram_8 .. cc_ram_15 / cc_ram_0 .. cc_ram_7 |
-| Bank 1 | cc_ram_24 .. cc_ram_31 / cc_ram_16 .. cc_ram_23 / cc_ram_8 .. cc_ram_15 / cc_ram_0 .. cc_ram_7 |
-| Bank 2 | cc_ram_24 .. cc_ram_31 / cc_ram_16 .. cc_ram_23 / cc_ram_8 .. cc_ram_15 / cc_ram_0 .. cc_ram_7 |
-| Bank 3 | cc_ram_24 .. cc_ram_31 / cc_ram_16 .. cc_ram_23 / cc_ram_8 .. cc_ram_15 / cc_ram_0 .. cc_ram_7 |
+| Bank 0 | cc_ram_24 | cc_ram_16 | cc_ram_8 | cc_ram_0 |
+| | cc_ram_25 | cc_ram_17 | cc_ram_9 | cc_ram_1 |
+| | cc_ram_26 | cc_ram_18 | cc_ram_10 | cc_ram_2 |
+| | cc_ram_27 | cc_ram_19 | cc_ram_11 | cc_ram_3 |
+| | cc_ram_28 | cc_ram_20 | cc_ram_12 | cc_ram_4 |
+| | cc_ram_29 | cc_ram_21 | cc_ram_13 | cc_ram_5 |
+| | cc_ram_30 | cc_ram_22 | cc_ram_14 | cc_ram_6 |
+| | cc_ram_31 | cc_ram_23 | cc_ram_15 | cc_ram_7 |
+| Bank 1 | cc_ram_24 | cc_ram_16 | cc_ram_8 | cc_ram_0 |
+| | cc_ram_25 | cc_ram_17 | cc_ram_9 | cc_ram_1 |
+| | cc_ram_26 | cc_ram_18 | cc_ram_10 | cc_ram_2 |
+| | cc_ram_27 | cc_ram_19 | cc_ram_11 | cc_ram_3 |
+| | cc_ram_28 | cc_ram_20 | cc_ram_12 | cc_ram_4 |
+| | cc_ram_29 | cc_ram_21 | cc_ram_13 | cc_ram_5 |
+| | cc_ram_30 | cc_ram_22 | cc_ram_14 | cc_ram_6 |
+| | cc_ram_31 | cc_ram_23 | cc_ram_15 | cc_ram_7 |
+| Bank 2 | cc_ram_24 | cc_ram_16 | cc_ram_8 | cc_ram_0 |
+| | cc_ram_25 | cc_ram_17 | cc_ram_9 | cc_ram_1 |
+| | cc_ram_26 | cc_ram_18 | cc_ram_10 | cc_ram_2 |
+| | cc_ram_27 | cc_ram_19 | cc_ram_11 | cc_ram_3 |
+| | cc_ram_28 | cc_ram_20 | cc_ram_12 | cc_ram_4 |
+| | cc_ram_29 | cc_ram_21 | cc_ram_13 | cc_ram_5 |
+| | cc_ram_30 | cc_ram_22 | cc_ram_14 | cc_ram_6 |
+| | cc_ram_31 | cc_ram_23 | cc_ram_15 | cc_ram_7 |
+| Bank 3 | cc_ram_24 | cc_ram_16 | cc_ram_8 | cc_ram_0 |
+| | cc_ram_25 | cc_ram_17 | cc_ram_9 | cc_ram_1 |
+| | cc_ram_26 | cc_ram_18 | cc_ram_10 | cc_ram_2 |
+| | cc_ram_27 | cc_ram_19 | cc_ram_11 | cc_ram_3 |
+| | cc_ram_28 | cc_ram_20 | cc_ram_12 | cc_ram_4 |
+| | cc_ram_29 | cc_ram_21 | cc_ram_13 | cc_ram_5 |
+| | cc_ram_30 | cc_ram_22 | cc_ram_14 | cc_ram_6 |
+| | cc_ram_31 | cc_ram_23 | cc_ram_15 | cc_ram_7 |
 
 ### 3.1.6.1.4. Scratchpad
 

@@ -79,6 +79,5 @@ The following acronyms are used in this document.
 | VIPT | Virtually Indexed Physically Tagged |
 | WIRI | Writes-Ignored, Reads-Ignore field. A read-only register field reserved for future use. Writes to the field are ignored, and reads should ignore the value returned. |
 | WARL | Write-Any Read-Legal field. A register field that can be written with any value, but returns only supported values when read. |
-| WIRI | Writes-Ignored, Reads-Ignore field. A read-only register field reserved for future use. Writes to the field are ignored, and reads should ignore the value returned. |
 | WRL | Write-Legal, Read-Legal field. A register field that should only be written with legal values and that only returns legal value if last written with a legal value. |
 | WO | Write only |
