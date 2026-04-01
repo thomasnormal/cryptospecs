@@ -1,27 +1,19 @@
 {
   "files": [
-    "01_front_matter.md",
-    "02_polarfire_soc_mss_features.md",
-    "03_detailed_block_diagram.md",
-    "04_functional_blocks.md",
-    "05_mss_ddr_controller.md",
-    "06_peripherals.md",
-    "07_usb_otg_controller.md",
-    "08_emmc_sd_sdio.md",
-    "09_frq_meter.md",
-    "10_m2f_interrupt_controller.md",
-    "11_system_registers.md",
-    "12_interrupts.md",
-    "13_fabric_interface_controller.md",
-    "14_boot_process.md",
-    "15_resets.md",
-    "16_clocking.md",
-    "17_mss_memory_map.md",
-    "18_acronyms.md",
-    "19_appendix_a_acronyms.md",
-    "20_revision_history.md",
-    "21_microchip_fpga_support_and_legal.md",
-    "22_microchip_devices_code_protection_feature.md"
+    "00_front_matter.md",
+    "01_polarfire_soc_mss_features.md",
+    "02_detailed_block_diagram.md",
+    "03_cpu_core_complex.md",
+    "04_gigabit_ethernet_mac.md",
+    "05_mss_peripherals.md",
+    "06_system_registers.md",
+    "07_interrupts.md",
+    "08_fabric_interface_controller.md",
+    "09_boot_process.md",
+    "10_resets.md",
+    "11_clocking.md",
+    "12_mss_memory_map.md",
+    "13_appendix_acronyms.md"
   ],
-  "figure_count": 38
+  "page_count": 158
 }
