@@ -228,22 +228,22 @@ package crypto_isa_pkg;
 
     // ST_REG (rsrc1, rsrc0): stores rsrc1 to mem[r15+rsrc0]. (Table 11-34)
     // IW[7:4]=rsrc1, IW[3:0]=rsrc0.
-    //
+    localparam logic [7:0] OPC_ST_REG = 8'h01;
+
     // MOV_IMM_TO_STATUS (imm4): sets STATUS flags from 4-bit immediate. (Table 11-40)
-    // IW[3:0]=imm4; IW[7:4] is absent (assembler writes 0).
-    //
-    // Both share opcode 0x01 — confirmed by the spec (Tables 11-34 and 11-40).
-    // Decoder distinguishes them by IW[7:4]: nonzero → ST_REG, zero → MOV_IMM_TO_STATUS.
-    // (r0 as rsrc1 in ST_REG is valid but produces IW[7:4]=0, which is ambiguous;
-    //  software convention should avoid using r0 as rsrc1 in ST_REG.)
-    localparam logic [7:0] OPC_ST_REG            = 8'h01;
-    localparam logic [7:0] OPC_MOV_IMM_TO_STATUS = 8'h01;
+    // IW[3:0]=imm4. VU V2 only.
+    // Note: TRM Table 11-40 erroneously prints opcode 0x01; the correct value is 0x0F
+    // as confirmed by Infineon PDL source (cy_crypto_core_hw_vu.h).
+    localparam logic [7:0] OPC_MOV_IMM_TO_STATUS = 8'h0F;
 
     // SET_REG (rdst, imm13_0, imm13_1): set register data and size fields. (Table 11-31)
     // Special encoding: IW[31:30]=2'b10, IW[29:26]=rdst,
     //   IW[25:13]=imm13_1(size-minus-1), IW[12:0]=imm13_0(data).
     // No condition code field. Always executes.
-    localparam logic [1:0] OPC_SET_REG_2BIT = 2'b10;  // IW[31:30]
+    // IW[31:24] spans 0x80–0xBF depending on rdst and upper imm13_1 bits;
+    // PDL uses 0x80 as the base (rdst=0). Decoder uses IW[31:30]=2'b10 as discriminant.
+    localparam logic [1:0] OPC_SET_REG_2BIT  = 2'b10;  // IW[31:30] discriminant
+    localparam logic [7:0] OPC_SET_REG_BASE  = 8'h80;  // base opcode (rdst=0)
 
     // MOV_REG (rdst, rsrc): copy data+size from rsrc to rdst. (Table 11-32)
     // IW[15:12]=rdst, IW[3:0]=rsrc.
