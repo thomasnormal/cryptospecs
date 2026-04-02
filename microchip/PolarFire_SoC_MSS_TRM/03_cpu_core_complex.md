@@ -444,7 +444,7 @@ The ECC Error injection system works only during writes, which means that the st
 | Register Offset | 0x040 |
 | --- | --- |
 | Bits | Field Name | Attributes | Reset | Description |
-| [7:0] | Bit Position | RW | 0 | Specifies a bit position to toggle, within an SRAM. The width is SRAM width depends on the micro architecture, but is typically 72 bits for data SRAMs and ≈ 24 bits for Directory SRAM. |
+| [7:0] | Bit Position | RW | 0 | Specifies a bit position to toggle, within an SRAM. The SRAM width depends on the micro architecture, but is typically 72 bits for data SRAMs and ≈ 24 bits for Directory SRAM. |
 | [15:8] | Reserved | RW |  | — |
 | 16 | Target | RW | 0 | Setting this bit means the error injection will target the metadata SRAMs. Otherwise, the error injection targets the data SRAMs. |
 | [31:17] | Reserved | RW | — | — |
@@ -798,7 +798,7 @@ The high nibble of tdata1 contains a 4-bit type code that is used to identify th
 | 2 | Address/Data Match Trigger |
 | ≥3 | Reserved |
 
-The dmode bit of the Breakpoint Match Control Register (mcontrol) selects between the Debug mode (dmode=1) and Machine mode (dmode=1) views of the registers, where only the Debug mode code can access the Debug mode view of the TDRs. Any attempt to read/write the tdata1–3 registers in the Machine mode when dmode=1 raises an illegal instruction exception.
+The dmode bit of the Breakpoint Match Control Register (mcontrol) selects between the Debug mode (dmode=1) and Machine mode (dmode=0) views of the registers, where only the Debug mode code can access the Debug mode view of the TDRs. Any attempt to read/write the tdata1–3 registers in the Machine mode when dmode=1 raises an illegal instruction exception.
 
 #### 3.1.13.1.3. Debug Control and STATUS Register (dcsr)
 
@@ -869,7 +869,7 @@ NAPOT ranges make use of low-order bits of the associated breakpoint address reg
 
 **Table 3-29. NAPOT Ranges**
 
-| maddressoor | Match type and size |
+| maddress | Match type and size |
 | --- | --- |
 | a...aaaaaa | Exact 1 byte |
 | a...aaaaa0 | 2-byte NAPOT range |
@@ -878,9 +878,9 @@ NAPOT ranges make use of low-order bits of the associated breakpoint address reg
 | a...aa0111 | 16-byte NAPOT range |
 | a...a01111 | 32-byte NAPOT range |
 | ... | ... |
-| a01...1111 | 231-byte NAPOT range |
+| a01...1111 | 2^31-byte NAPOT range |
 
-The maskmax field is a 6-bit read-only field that specifies the largest supported NAPOT range. The value is the logarithm base 2 of the number of bytes in the largest supported NAPOT range. A value of 0 indicates that only exact address matches are supported (one-byte range). A value of 31 corresponds to the maximum NAPOT range, which is 231 bytes in size. The largest range is encoded in maddressoor with the 30 least-significant bits set to 1, bit 30 set to 0, and bit 31 holding the only address bit considered in the address comparison.
+The maskmax field is a 6-bit read-only field that specifies the largest supported NAPOT range. The value is the logarithm base 2 of the number of bytes in the largest supported NAPOT range. A value of 0 indicates that only exact address matches are supported (one-byte range). A value of 31 corresponds to the maximum NAPOT range, which is 2^31 bytes in size. The largest range is encoded in maddress with the 30 least-significant bits set to 1, bit 30 set to 0, and bit 31 holding the only address bit considered in the address comparison.
 
 > **Important:** The unary encoding of NAPOT ranges was chosen to reduce the hardware cost of storing and generating the corresponding address mask value.
 

@@ -142,6 +142,8 @@ All ECDSA steps are performed using a publicly agreed elliptic curve and base po
 
 **Figure 7-5. ECDSA Overview**
 
+![Figure 7-5: ECDSA Overview](figures/figure-140.png)
+
 | Parameter | Description |
 | --- | --- |
 | curve | Agreed elliptic curve used for signing and authenticating messages. |
