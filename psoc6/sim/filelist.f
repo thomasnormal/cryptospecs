@@ -35,8 +35,8 @@
 ../rtl/hash/sha3_keccak.sv
 
 // ---- Phase 4: CRC + PRNG ----
-// ../rtl/rng/crc_engine.sv
-// ../rtl/rng/prng_engine.sv
+../rtl/rng/crc_engine.sv
+../rtl/rng/prng_engine.sv
 
 // ---- Phase 5: TRNG ----
 // ../rtl/rng/trng_core.sv

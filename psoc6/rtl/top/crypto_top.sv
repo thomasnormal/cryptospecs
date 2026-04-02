@@ -548,12 +548,39 @@ module crypto_top
     // DES stub
     assign des_busy = 1'b0;
 
-    // CRC stub
-    assign crc_busy       = 1'b0;
-    assign crc_rem_result = '0;
+    // ------------------------------------------------------------------
+    // CRC Engine (Phase 4)
+    // ------------------------------------------------------------------
+    crc_engine u_crc (
+        .clk                 (clk),
+        .rst_n               (rst_n),
+        .crc_start           (crc_start),
+        .crc_busy            (crc_busy),
+        .ld0_staging         (ld0_staging),
+        .ld0_valid           (ld0_valid_raw),
+        .ff_done             (ff_done),
+        .reg_crc_polynomial  (reg_crc_polynomial),
+        .reg_crc_lfsr        (reg_crc_lfsr),
+        .reg_crc_rem_xor     (reg_crc_rem_xor),
+        .reg_crc_rem_reverse (reg_crc_rem_reverse),
+        .reg_crc_data_reverse(reg_crc_data_reverse),
+        .reg_crc_data_xor    (reg_crc_data_xor),
+        .crc_rem_result      (crc_rem_result)
+    );
 
-    // PRNG stub
-    assign pr_result = {reg_pr_lfsr0 ^ {1'b0, reg_pr_lfsr1} ^ {3'b0, reg_pr_lfsr2}};
+    // ------------------------------------------------------------------
+    // PRNG Engine (Phase 4)
+    // ------------------------------------------------------------------
+    prng_engine u_prng (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .enabled   (reg_ctl_enabled),
+        .seed0     (reg_pr_lfsr0),
+        .seed1     (reg_pr_lfsr1),
+        .seed2     (reg_pr_lfsr2),
+        .pr_reseed (1'b0),       // reseed from AHB write not yet implemented
+        .pr_result (pr_result)
+    );
 
     // TRNG stub
     assign tr_result = 32'hDEADBEEF;
