@@ -43,11 +43,11 @@
 ../rtl/rng/trng_health_mon.sv
 
 // ---- Phase 6: DES/TDES ----
-// ../rtl/cipher/des_core.sv
+../rtl/cipher/des_core.sv
 
 // ---- Phase 6: GCM (used by AES GCM mode) ----
-// ../rtl/cipher/gf_mult_128.sv
-// ../rtl/cipher/ghash.sv
+../rtl/cipher/gf_mult_128.sv
+../rtl/cipher/ghash.sv
 
 // ---- Phase 7: Vector Unit ----
 // ../rtl/vu/vu_register_file.sv

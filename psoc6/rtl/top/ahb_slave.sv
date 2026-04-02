@@ -50,6 +50,7 @@ module ahb_slave
 
     // ---- Register outputs to engines ----
     output logic [1:0]  reg_aes_key_size,    // AES_CTL.KEY_SIZE
+    output logic        reg_aes_gcm_mode,   // AES_CTL.GCM_MODE (bit 2)
     output logic [2:0]  reg_sha_mode,        // SHA_CTL.MODE
     output logic        reg_ctl_enabled,     // CTL.ENABLED
     output logic [1:0]  reg_pwr_mode,        // CTL.PWR_MODE
@@ -148,6 +149,7 @@ module ahb_slave
             reg_ctl_enabled      <= 1'b0;
             reg_pwr_mode         <= 2'd3; // PWR_ENABLED default
             reg_aes_key_size     <= 2'd0;
+            reg_aes_gcm_mode     <= 1'b0;
             reg_sha_mode         <= 3'd1;
             reg_crc_rem_reverse  <= 1'b0;
             reg_crc_data_reverse <= 1'b0;
@@ -189,7 +191,10 @@ module ahb_slave
                         reg_ctl_enabled <= hwdata[CTL_BIT_ENABLED];
                         reg_pwr_mode    <= hwdata[CTL_BIT_PWR_MODE_HI:CTL_BIT_PWR_MODE_LO];
                     end
-                    CRYPTO_AES_CTL:      reg_aes_key_size     <= hwdata[1:0];
+                    CRYPTO_AES_CTL: begin
+                        reg_aes_key_size <= hwdata[1:0];
+                        reg_aes_gcm_mode <= hwdata[2];
+                    end
                     CRYPTO_SHA_CTL:      reg_sha_mode         <= hwdata[2:0];
                     CRYPTO_CRC_CTL: begin
                         reg_crc_rem_reverse  <= hwdata[8];
@@ -304,7 +309,7 @@ module ahb_slave
                     CRYPTO_STATUS:          hrdata = status_w;
                     CRYPTO_INSTR_FF_CTL:    hrdata = '0; // WO fields, return 0
                     CRYPTO_INSTR_FF_STATUS: hrdata = ff_status_w;
-                    CRYPTO_AES_CTL:         hrdata = {30'h0, reg_aes_key_size};
+                    CRYPTO_AES_CTL:         hrdata = {29'h0, reg_aes_gcm_mode, reg_aes_key_size};
                     CRYPTO_SHA_CTL:         hrdata = {29'h0, reg_sha_mode};
                     CRYPTO_CRC_CTL:         hrdata = {23'h0, reg_crc_rem_reverse, 7'h0, reg_crc_data_reverse};
                     CRYPTO_CRC_DATA_CTL:    hrdata = {24'h0, reg_crc_data_xor};

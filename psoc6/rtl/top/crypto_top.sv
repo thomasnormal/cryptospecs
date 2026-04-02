@@ -63,7 +63,7 @@ module crypto_top
     logic [3:0]  bop_src0, bop_src1, bop_dst, bop_size;
     logic [7:0]  bop_byte;
     logic        bop_reflect, bop_start;
-    logic        bop_done, bop_cmp_eq;
+    logic        bop_done, bop_cmp_eq, rb_bop_done;
     logic        rbuf_clear, rbuf_swap;
 
     // Decoder → load_store_fifo
@@ -105,6 +105,7 @@ module crypto_top
 
     // AHB slave register outputs
     logic [1:0]  reg_aes_key_size;
+    logic        reg_aes_gcm_mode;
     logic [2:0]  reg_sha_mode;
     logic        reg_ctl_enabled;
     logic [1:0]  reg_pwr_mode;
@@ -162,6 +163,17 @@ module crypto_top
     logic [127:0] aes_eng_wr_data;
     logic         aes_eng_wr_en;
 
+    // DES engine write signals
+    logic [3:0]   des_eng_wr_addr;
+    logic [127:0] des_eng_wr_data;
+    logic         des_eng_wr_en;
+
+    // GHASH engine write signals
+    logic [3:0]   ghash_eng_wr_addr;
+    logic [127:0] ghash_eng_wr_data;
+    logic         ghash_eng_wr_en;
+    logic         ghash_start_sig, ghash_busy_sig;
+
     // SHA engine write-bus (muxed output from all 4 SHA cores)
     logic [3:0]   sha_eng_wr_addr;
     logic [127:0] sha_eng_wr_data;
@@ -203,6 +215,7 @@ module crypto_top
         .vu_busy            (vu_busy),
         .decoder_busy       (decoder_busy),
         .reg_aes_key_size   (reg_aes_key_size),
+        .reg_aes_gcm_mode   (reg_aes_gcm_mode),
         .reg_sha_mode       (reg_sha_mode),
         .reg_ctl_enabled    (reg_ctl_enabled),
         .reg_pwr_mode       (reg_pwr_mode),
@@ -378,12 +391,16 @@ module crypto_top
                              sha512_wr_en ? sha512_wr_data  :
                                             sha3_wr_data;
 
-    // eng_wr: AES has priority; SHA follows
-    assign eng_wr_addr = aes_eng_wr_en   ? aes_eng_wr_addr :
-                         sha_eng_wr_en   ? sha_eng_wr_addr : 4'd0;
-    assign eng_wr_data = aes_eng_wr_en   ? aes_eng_wr_data :
-                         sha_eng_wr_en   ? sha_eng_wr_data : '0;
-    assign eng_wr_en   = aes_eng_wr_en | sha_eng_wr_en;
+    // eng_wr: priority: AES > SHA > DES > GHASH
+    assign eng_wr_addr = aes_eng_wr_en   ? aes_eng_wr_addr  :
+                         sha_eng_wr_en   ? sha_eng_wr_addr  :
+                         des_eng_wr_en   ? des_eng_wr_addr  :
+                         ghash_eng_wr_en ? ghash_eng_wr_addr : 4'd0;
+    assign eng_wr_data = aes_eng_wr_en   ? aes_eng_wr_data  :
+                         sha_eng_wr_en   ? sha_eng_wr_data  :
+                         des_eng_wr_en   ? des_eng_wr_data  :
+                         ghash_eng_wr_en ? ghash_eng_wr_data : '0;
+    assign eng_wr_en   = aes_eng_wr_en | sha_eng_wr_en | des_eng_wr_en | ghash_eng_wr_en;
 
     reg_buffer u_reg_buffer (
         .clk         (clk),
@@ -395,8 +412,10 @@ module crypto_top
         .bop_size    (bop_size),
         .bop_byte    (bop_byte),
         .bop_reflect (bop_reflect),
-        .bop_start   (bop_start && (bop_dst != BLKID_STORE_FIFO)), // skip if dst is STORE
-        .bop_done    (bop_done),
+        // Suppress CMP_GCM execution in reg_buffer when in GCM mode (GHASH handles it)
+        .bop_start   (bop_start && (bop_dst != BLKID_STORE_FIFO)
+                      && !(reg_aes_gcm_mode && (bop_opcode == OPC_BLOCK_CMP_GCM))),
+        .bop_done    (rb_bop_done),
         .bop_cmp_eq  (bop_cmp_eq),
         .rbuf_clear  (rbuf_clear),
         .rbuf_swap   (rbuf_swap),
@@ -415,6 +434,8 @@ module crypto_top
         .eng_wr_en   (eng_wr_en),
         .sha_rb_rd   (sha_rb_rd)
     );
+    // bop_done: from reg_buffer normally; ghash writeback pulse in GCM mode
+    assign bop_done = reg_aes_gcm_mode ? ghash_eng_wr_en : rb_bop_done;
 
     // ------------------------------------------------------------------
     // Memory Buffer
@@ -545,8 +566,37 @@ module crypto_top
 
     assign sha_busy = sha1_busy | sha256_busy | sha512_busy | sha3_busy_sig;
 
-    // DES stub
-    assign des_busy = 1'b0;
+    // ------------------------------------------------------------------
+    // DES / Triple-DES Engine (Phase 6)
+    // ------------------------------------------------------------------
+    des_core u_des (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .des_mode    (des_mode),
+        .des_start   (des_start),
+        .des_busy    (des_busy),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (des_eng_wr_addr),
+        .eng_wr_data (des_eng_wr_data),
+        .eng_wr_en   (des_eng_wr_en)
+    );
+
+    // ------------------------------------------------------------------
+    // GHASH Engine (Phase 6) — GCM GF(2^128) multiply-accumulate
+    // Triggered when OPC_BLOCK_CMP_GCM fires in AES_CTL.GCM_MODE=1
+    // ------------------------------------------------------------------
+    assign ghash_start_sig = bop_start && (bop_opcode == OPC_BLOCK_CMP_GCM) && reg_aes_gcm_mode;
+
+    ghash u_ghash (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .ghash_start (ghash_start_sig),
+        .ghash_busy  (ghash_busy_sig),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (ghash_eng_wr_addr),
+        .eng_wr_data (ghash_eng_wr_data),
+        .eng_wr_en   (ghash_eng_wr_en)
+    );
 
     // ------------------------------------------------------------------
     // CRC Engine (Phase 4)
