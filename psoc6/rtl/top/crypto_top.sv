@@ -582,8 +582,36 @@ module crypto_top
         .pr_result (pr_result)
     );
 
-    // TRNG stub
-    assign tr_result = 32'hDEADBEEF;
+    // ------------------------------------------------------------------
+    // TRNG Core + Health Monitor (Phase 5)
+    // ------------------------------------------------------------------
+    logic        trng_bit, trng_bit_valid, trng_result_valid;
+    logic        trng_rc_fail, trng_ap_fail;
+
+    trng_core u_trng (
+        .clk             (clk),
+        .rst_n           (rst_n),
+        .reg_tr_ctl0     (reg_tr_ctl0),
+        .reg_tr_ctl1     (reg_tr_ctl1),
+        .reg_tr_garo_ctl (reg_tr_garo_ctl),
+        .reg_tr_firo_ctl (reg_tr_firo_ctl),
+        .tr_result       (tr_result),
+        .tr_result_valid (trng_result_valid),
+        .tr_bit          (trng_bit),
+        .tr_bit_valid    (trng_bit_valid)
+    );
+
+    trng_health_mon u_trng_hmon (
+        .clk                 (clk),
+        .rst_n               (rst_n),
+        .tr_bit              (trng_bit),
+        .tr_bit_valid        (trng_bit_valid),
+        .reg_tr_mon_ctl      (reg_tr_mon_ctl),
+        .reg_tr_mon_rc_cutoff(reg_tr_mon_rc_cutoff),
+        .reg_tr_mon_ap_ctl   (reg_tr_mon_ap_ctl),
+        .rc_fail             (trng_rc_fail),
+        .ap_fail             (trng_ap_fail)
+    );
 
     // VU stub
     assign vu_busy  = 1'b0;
@@ -599,8 +627,8 @@ module crypto_top
     // ------------------------------------------------------------------
     assign intr_raw = {
         11'h0,
-        1'b0,                  // [20] TR_RC
-        1'b0,                  // [19] TR_AP
+        trng_rc_fail,          // [20] TR_RC
+        trng_ap_fail,          // [19] TR_AP
         1'b0,                  // [18] BUS_ERROR
         cc_error_irq,          // [17] INSTR_CC_ERROR
         opc_error_irq,         // [16] INSTR_OPC_ERROR

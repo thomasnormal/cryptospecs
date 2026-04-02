@@ -39,8 +39,8 @@
 ../rtl/rng/prng_engine.sv
 
 // ---- Phase 5: TRNG ----
-// ../rtl/rng/trng_core.sv
-// ../rtl/rng/trng_health_mon.sv
+../rtl/rng/trng_core.sv
+../rtl/rng/trng_health_mon.sv
 
 // ---- Phase 6: DES/TDES ----
 // ../rtl/cipher/des_core.sv
