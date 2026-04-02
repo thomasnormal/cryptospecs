@@ -153,11 +153,25 @@ module crypto_top
     logic [127:0] eng_wr_data;
     logic         eng_wr_en;
 
+    // SHA: full 2048-bit register buffer read port
+    logic [2047:0] sha_rb_rd;
+
     // aes_core engine port sub-signals
     logic [3:0]   aes_eng_rd_addr;
     logic [3:0]   aes_eng_wr_addr;
     logic [127:0] aes_eng_wr_data;
     logic         aes_eng_wr_en;
+
+    // SHA engine write-bus (muxed output from all 4 SHA cores)
+    logic [3:0]   sha_eng_wr_addr;
+    logic [127:0] sha_eng_wr_data;
+    logic         sha_eng_wr_en;
+
+    // Per-SHA-core busy + wr signals
+    logic sha1_busy, sha256_busy, sha512_busy, sha3_busy_sig;
+    logic [3:0]   sha1_wr_addr, sha256_wr_addr, sha512_wr_addr, sha3_wr_addr;
+    logic [127:0] sha1_wr_data, sha256_wr_data, sha512_wr_data, sha3_wr_data;
+    logic         sha1_wr_en,   sha256_wr_en,   sha512_wr_en,   sha3_wr_en;
 
     // ------------------------------------------------------------------
     // AHB Slave
@@ -353,10 +367,23 @@ module crypto_top
     assign eng_rd_addr = aes_busy     ? aes_eng_rd_addr :
                          st_arm_valid ? st_arm_src : 4'd0;
 
-    // eng_wr: only aes_core uses it for now; other engines are stubs
-    assign eng_wr_addr = aes_eng_wr_addr;
-    assign eng_wr_data = aes_eng_wr_data;
-    assign eng_wr_en   = aes_eng_wr_en;
+    // SHA write-bus mux (only one SHA core active at a time)
+    assign sha_eng_wr_en   = sha1_wr_en | sha256_wr_en | sha512_wr_en | sha3_wr_en;
+    assign sha_eng_wr_addr = sha1_wr_en   ? sha1_wr_addr   :
+                             sha256_wr_en ? sha256_wr_addr  :
+                             sha512_wr_en ? sha512_wr_addr  :
+                                            sha3_wr_addr;
+    assign sha_eng_wr_data = sha1_wr_en   ? sha1_wr_data   :
+                             sha256_wr_en ? sha256_wr_data  :
+                             sha512_wr_en ? sha512_wr_data  :
+                                            sha3_wr_data;
+
+    // eng_wr: AES has priority; SHA follows
+    assign eng_wr_addr = aes_eng_wr_en   ? aes_eng_wr_addr :
+                         sha_eng_wr_en   ? sha_eng_wr_addr : 4'd0;
+    assign eng_wr_data = aes_eng_wr_en   ? aes_eng_wr_data :
+                         sha_eng_wr_en   ? sha_eng_wr_data : '0;
+    assign eng_wr_en   = aes_eng_wr_en | sha_eng_wr_en;
 
     reg_buffer u_reg_buffer (
         .clk         (clk),
@@ -385,7 +412,8 @@ module crypto_top
         .eng_rd_data (eng_rd_data),
         .eng_wr_addr (eng_wr_addr),
         .eng_wr_data (eng_wr_data),
-        .eng_wr_en   (eng_wr_en)
+        .eng_wr_en   (eng_wr_en),
+        .sha_rb_rd   (sha_rb_rd)
     );
 
     // ------------------------------------------------------------------
@@ -466,8 +494,56 @@ module crypto_top
     // Engine stubs (replaced phase-by-phase)
     // ------------------------------------------------------------------
 
-    // SHA stub
-    assign sha_busy = 1'b0;
+    // ------------------------------------------------------------------
+    // SHA Cores (Phase 3)
+    // ------------------------------------------------------------------
+    // sha_mode[2:0]: 0=SHA1, 1=SHA256, 2=SHA512, 3=SHA3/Keccak
+    // sha_start fires for all SHA opcodes; mode gates the correct core
+    sha1_core u_sha1 (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .start       (sha_start && (sha_mode == 3'd0)),
+        .busy        (sha1_busy),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (sha1_wr_addr),
+        .eng_wr_data (sha1_wr_data),
+        .eng_wr_en   (sha1_wr_en)
+    );
+
+    sha2_256_core u_sha256 (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .start       (sha_start && (sha_mode == 3'd1)),
+        .busy        (sha256_busy),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (sha256_wr_addr),
+        .eng_wr_data (sha256_wr_data),
+        .eng_wr_en   (sha256_wr_en)
+    );
+
+    sha2_512_core u_sha512 (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .start       (sha_start && (sha_mode == 3'd2)),
+        .busy        (sha512_busy),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (sha512_wr_addr),
+        .eng_wr_data (sha512_wr_data),
+        .eng_wr_en   (sha512_wr_en)
+    );
+
+    sha3_keccak u_sha3 (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .start       (sha_start && (sha_mode >= 3'd3)),
+        .busy        (sha3_busy_sig),
+        .sha_rb_rd   (sha_rb_rd),
+        .eng_wr_addr (sha3_wr_addr),
+        .eng_wr_data (sha3_wr_data),
+        .eng_wr_en   (sha3_wr_en)
+    );
+
+    assign sha_busy = sha1_busy | sha256_busy | sha512_busy | sha3_busy_sig;
 
     // DES stub
     assign des_busy = 1'b0;

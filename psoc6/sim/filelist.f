@@ -29,10 +29,10 @@
 ../rtl/cipher/aes_core.sv
 
 // ---- Phase 3: Hash engines ----
-// ../rtl/hash/sha1_core.sv
-// ../rtl/hash/sha2_256_core.sv
-// ../rtl/hash/sha2_512_core.sv
-// ../rtl/hash/sha3_keccak.sv
+../rtl/hash/sha1_core.sv
+../rtl/hash/sha2_256_core.sv
+../rtl/hash/sha2_512_core.sv
+../rtl/hash/sha3_keccak.sv
 
 // ---- Phase 4: CRC + PRNG ----
 // ../rtl/rng/crc_engine.sv
