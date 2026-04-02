@@ -1,0 +1,34 @@
+# Simulator build outputs
+simv
+simv.daidir/
+csrc/
+xcelium.d/
+work/
+AN.DB/
+DVEfiles/
+urgReport/
+
+# Logs and run artifacts
+*.log
+*.history
+logs/
+
+# Coverage databases and reports
+cov_work/
+coverage/
+cov_report.txt/
+html_*/
+imc.key
+mdv.log
+
+# Wave dumps
+waves.shm/
+waves.vcd
+*.vcd
+*.fsdb
+
+# Xcelium/error files
+.bpad/
+bpad_*.err
+xmsim_*.err
+compile.history

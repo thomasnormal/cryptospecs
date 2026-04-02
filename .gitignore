@@ -1,0 +1,36 @@
+# Simulator build outputs (all projects)
+**/sim/simv
+**/sim/simv.daidir/
+**/sim/csrc/
+**/sim/xcelium.d/
+**/sim/work/
+**/sim/AN.DB/
+**/sim/DVEfiles/
+**/sim/urgReport/
+
+# Logs and run artifacts
+**/sim/*.log
+**/sim/*.history
+**/sim/logs/
+
+# Coverage
+**/sim/cov_work/
+**/sim/coverage/
+**/sim/cov_report.txt/
+**/sim/html_*/
+**/sim/imc.key
+**/sim/mdv.log
+
+# Wave dumps
+**/sim/waves.shm/
+**/sim/*.vcd
+**/sim/*.fsdb
+
+# Xcelium/error files
+**/sim/.bpad/
+**/sim/bpad_*.err
+**/sim/xmsim_*.err
+**/sim/compile.history
+
+# Extracted PDF pages (generated)
+**/pdf_pages/

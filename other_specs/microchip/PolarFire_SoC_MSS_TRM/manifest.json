@@ -1,0 +1,19 @@
+{
+  "files": [
+    "00_front_matter.md",
+    "01_polarfire_soc_mss_features.md",
+    "02_detailed_block_diagram.md",
+    "03_cpu_core_complex.md",
+    "04_gigabit_ethernet_mac.md",
+    "05_mss_peripherals.md",
+    "06_system_registers.md",
+    "07_interrupts.md",
+    "08_fabric_interface_controller.md",
+    "09_boot_process.md",
+    "10_resets.md",
+    "11_clocking.md",
+    "12_mss_memory_map.md",
+    "13_appendix_acronyms.md"
+  ],
+  "page_count": 158
+}
