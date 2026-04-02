@@ -446,10 +446,10 @@ module crypto_top
         .a_wdata (mb_a_wdata),
         .a_we    (mb_a_we),
         .a_rdata (mb_a_rdata),
-        .b_addr  ('0),  // Engine B port unused in Phase 1
-        .b_wdata ('0),
-        .b_we    (1'b0),
-        .b_rdata (/* unused */)
+        .b_addr  (vu_mb_b_addr),
+        .b_wdata (vu_mb_b_wdata),
+        .b_we    (vu_mb_b_we),
+        .b_rdata (vu_mb_b_rdata)
     );
 
     // ------------------------------------------------------------------
@@ -663,14 +663,27 @@ module crypto_top
         .ap_fail             (trng_ap_fail)
     );
 
-    // VU stub
-    assign vu_busy  = 1'b0;
-    assign vu_status = 4'b0000;
-    generate
-        for (genvar g = 0; g < RF_NREGS; g++) begin : vu_rf_zero
-            assign vu_rf_data[g] = '0;
-        end
-    endgenerate
+    // ------------------------------------------------------------------
+    // Vector Unit (Phase 7)
+    // ------------------------------------------------------------------
+    logic [9:0]  vu_mb_b_addr;
+    logic [31:0] vu_mb_b_wdata;
+    logic        vu_mb_b_we;
+    logic [31:0] vu_mb_b_rdata;
+
+    vu_top u_vu (
+        .clk        (clk),
+        .rst_n      (rst_n),
+        .vu_instr   (vu_instr),
+        .vu_start   (vu_start),
+        .vu_busy    (vu_busy),
+        .vu_status  (vu_status),
+        .vu_rf_data (vu_rf_data),
+        .b_addr     (vu_mb_b_addr),
+        .b_wdata    (vu_mb_b_wdata),
+        .b_we       (vu_mb_b_we),
+        .b_rdata    (vu_mb_b_rdata)
+    );
 
     // ------------------------------------------------------------------
     // Interrupt aggregation

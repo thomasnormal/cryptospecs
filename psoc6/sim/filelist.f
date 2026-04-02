@@ -50,9 +50,9 @@
 ../rtl/cipher/ghash.sv
 
 // ---- Phase 7: Vector Unit ----
-// ../rtl/vu/vu_register_file.sv
-// ../rtl/vu/vu_alu.sv
-// ../rtl/vu/vu_shifter.sv
-// ../rtl/vu/vu_multiplier.sv
-// ../rtl/vu/vu_controller.sv
-// ../rtl/vu/vu_top.sv
+../rtl/vu/vu_register_file.sv
+../rtl/vu/vu_alu.sv
+../rtl/vu/vu_shifter.sv
+../rtl/vu/vu_multiplier.sv
+../rtl/vu/vu_controller.sv
+../rtl/vu/vu_top.sv
