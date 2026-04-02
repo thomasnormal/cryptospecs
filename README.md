@@ -59,6 +59,7 @@ the higher priority it is for implementation.
 |---------|------|------------|-----------|--------------------|-----|--------|
 | [esp32_p4_aes](esp32_p4_aes/) | Espressif ESP32-P4 | AES accelerator | 128 / 256 | ECB, CBC, OFB, CTR, CFB-8, CFB-128, GCM | AHB-Lite (ctrl) + AXI4 (DMA) | RTL + UVM complete, 14 regression tests |
 | [psoc6](psoc6/) | Infineon PSoC 6 | Crypto block | 128 / 192 / 256 | AES, DES/3DES, SHA-1/2/3, CRC, PRNG, TRNG, VU (RSA/ECC) | AHB-Lite slave + AHB master | RTL in progress |
+| [psoc_c3](psoc_c3/) | Infineon PSoC Control C3 | CryptoLite | 128 | AES-128 ECB, SHA-256, TRNG, VU (RSA/ECC) | AHB-Lite slave + AHB master | RTL in progress |
 
 ### PSoC 6 notable features
 - Instruction-FIFO execution model: CPU pushes 32-bit instruction words; HW decodes and dispatches
@@ -77,7 +78,7 @@ the higher priority it is for implementation.
 
 | Vendor | Device / Doc | Highlights | Score |
 |--------|-------------|-----------|-------|
-| Infineon | [PSoC Control C3](other_specs/infineon/) | Next-gen PSoC, M33 core, updated crypto | High |
+| Infineon | [PSoC Edge E8x](other_specs/infineon/) | ML-focused, dual-core, hardware crypto | High |
 | Infineon | [PSoC Edge E8x](other_specs/infineon/) | ML-focused, dual-core, hardware crypto | High |
 | Rambus / Inside Secure | [SafeXcel EIP-93, EIP-97](other_specs/rambus_insidesecure/) | Packet engine IP cores, AHB/AXI, full cipher+hash+AEAD | High |
 | Microchip | [PolarFire SoC MSS](other_specs/microchip/) | RISC-V, fabric-based crypto subsystem | Medium |
@@ -96,6 +97,7 @@ the higher priority it is for implementation.
 ifx_like/
   esp32_p4_aes/          RTL + UVM for Espressif ESP32-P4 AES
   psoc6/                 RTL + UVM for Infineon PSoC 6 Crypto
+  psoc_c3/               RTL + UVM for Infineon PSoC Control C3 CryptoLite
     pdl/                 Submodule: Infineon/mtb-pdl-cat1 (reference drivers)
     rtl/
       pkg/               crypto_pkg.sv, crypto_isa_pkg.sv
