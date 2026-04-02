@@ -20,13 +20,13 @@
 ../rtl/top/ahb_master.sv
 ../rtl/top/crypto_top.sv
 
-// ---- Phase 2: AES cipher (uncomment when implemented) ----
-// ../rtl/cipher/aes_sbox.sv
-// ../rtl/cipher/aes_mix_columns.sv
-// ../rtl/cipher/aes_round.sv
-// ../rtl/cipher/aes_inv_round.sv
-// ../rtl/cipher/aes_key_expand.sv
-// ../rtl/cipher/aes_core.sv
+// ---- Phase 2: AES cipher ----
+../rtl/cipher/aes_sbox.sv
+../rtl/cipher/aes_mix_columns.sv
+../rtl/cipher/aes_round.sv
+../rtl/cipher/aes_inv_round.sv
+../rtl/cipher/aes_key_expand.sv
+../rtl/cipher/aes_core.sv
 
 // ---- Phase 3: Hash engines ----
 // ../rtl/hash/sha1_core.sv

@@ -153,6 +153,12 @@ module crypto_top
     logic [127:0] eng_wr_data;
     logic         eng_wr_en;
 
+    // aes_core engine port sub-signals
+    logic [3:0]   aes_eng_rd_addr;
+    logic [3:0]   aes_eng_wr_addr;
+    logic [127:0] aes_eng_wr_data;
+    logic         aes_eng_wr_en;
+
     // ------------------------------------------------------------------
     // AHB Slave
     // ------------------------------------------------------------------
@@ -343,8 +349,14 @@ module crypto_top
         end
     end
 
-    // Provide eng_rd_addr for store staging capture
-    assign eng_rd_addr = st_arm_valid ? st_arm_src : 4'd0;
+    // eng_rd_addr mux: aes_core gets priority when busy, else store-staging path
+    assign eng_rd_addr = aes_busy     ? aes_eng_rd_addr :
+                         st_arm_valid ? st_arm_src : 4'd0;
+
+    // eng_wr: only aes_core uses it for now; other engines are stubs
+    assign eng_wr_addr = aes_eng_wr_addr;
+    assign eng_wr_data = aes_eng_wr_data;
+    assign eng_wr_en   = aes_eng_wr_en;
 
     reg_buffer u_reg_buffer (
         .clk         (clk),
@@ -434,14 +446,25 @@ module crypto_top
     );
 
     // ------------------------------------------------------------------
+    // AES Core (Phase 2)
+    // ------------------------------------------------------------------
+    aes_core u_aes_core (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .key_size    (reg_aes_key_size),
+        .decrypt     (aes_decrypt),
+        .start       (aes_start),
+        .busy        (aes_busy),
+        .eng_rd_addr (aes_eng_rd_addr),
+        .eng_rd_data (eng_rd_data),
+        .eng_wr_addr (aes_eng_wr_addr),
+        .eng_wr_data (aes_eng_wr_data),
+        .eng_wr_en   (aes_eng_wr_en)
+    );
+
+    // ------------------------------------------------------------------
     // Engine stubs (replaced phase-by-phase)
     // ------------------------------------------------------------------
-
-    // AES stub — replaced in Phase 2
-    assign aes_busy    = 1'b0;
-    assign eng_wr_addr = 4'd1; // BLOCK1 = ciphertext out
-    assign eng_wr_data = '0;
-    assign eng_wr_en   = 1'b0;
 
     // SHA stub
     assign sha_busy = 1'b0;
