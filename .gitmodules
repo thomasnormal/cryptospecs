@@ -1,0 +1,3 @@
+[submodule "psoc6/pdl"]
+	path = psoc6/pdl
+	url = https://github.com/Infineon/mtb-pdl-cat1.git
