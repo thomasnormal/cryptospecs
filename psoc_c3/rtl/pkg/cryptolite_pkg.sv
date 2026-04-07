@@ -148,38 +148,75 @@ package cryptolite_pkg;
     localparam int INTR_TRNG_BIT_RC_DETECT     = 3;
 
     // ---------------------------------------------------------------
-    // AES descriptor layout (in system memory, 3 × 32-bit words)
-    // Word 0: {24'h0, 8'h01} — function selector (0x01 = encrypt)
-    // Word 1: 32-bit pointer to {key[127:0], src[127:0]} — key first
-    // Word 2: 32-bit pointer to dst[127:0] (128-bit ciphertext)
-    // All pointers must be 4-byte aligned.
+    // AES descriptor layout (in system memory, 3 × 32-bit word pointers)
+    // Word 0: 32-bit pointer to 128-bit (16-byte) secret key
+    // Word 1: 32-bit pointer to 128-bit (16-byte) plaintext input
+    // Word 2: 32-bit pointer to 128-bit (16-byte) ciphertext output
+    // All pointers must be 4-byte aligned.  Only ECB-128 encrypt is supported.
     // ---------------------------------------------------------------
-    localparam int AES_DESCR_FUNC_WORD  = 0;
-    localparam int AES_DESCR_SRC_WORD   = 1;  // points to {key, plaintext}
-    localparam int AES_DESCR_DST_WORD   = 2;  // points to ciphertext output
+    localparam int AES_DESCR_KEY_WORD  = 0;  // pointer to 16-byte key
+    localparam int AES_DESCR_SRC_WORD  = 1;  // pointer to 16-byte plaintext
+    localparam int AES_DESCR_DST_WORD  = 2;  // pointer to 16-byte ciphertext output
 
     // ---------------------------------------------------------------
     // SHA-256 descriptor layout (in system memory, 3 × 32-bit words)
-    // Schedule function (MSG_SCH):
-    //   Word 0: function = MSG_SCH
-    //   Word 1: pointer to 512-bit (64-byte) message chunk (input)
-    //   Word 2: pointer to 64×32-bit (256-byte) message schedule array (output)
-    // Process function (PROCESS):
-    //   Word 0: function = PROCESS
-    //   Word 1: pointer to 8×32-bit (32-byte) hash state (input/output)
-    //   Word 2: pointer to 64×32-bit (256-byte) message schedule array (input)
+    // Word 0: control — bit[28]=0 → message schedule pass, bit[28]=1 → process pass
+    //   Schedule pass (WORD0[28]=0):
+    //     Word 1: pointer to 512-bit (64-byte) message block (16×32b, input)
+    //     Word 2: pointer to 256-byte message schedule array (64×32b, output)
+    //   Process pass (WORD0[28]=1):
+    //     Word 1: pointer to 256-bit hash state (8×32b, in/out)
+    //     Word 2: pointer to 256-byte message schedule array (64×32b, input)
     // ---------------------------------------------------------------
-    localparam logic [7:0] SHA_FUNC_MSG_SCH = 8'h01;  // message schedule
-    localparam logic [7:0] SHA_FUNC_PROCESS = 8'h02;  // hash round
+    localparam int SHA_DESCR_CTL_WORD  = 0;  // control word; bit[28] selects function
+    localparam int SHA_DESCR_OP1_WORD  = 1;  // msg block (sch) or hash state (proc)
+    localparam int SHA_DESCR_OP2_WORD  = 2;  // schedule array (both passes)
 
-    localparam int SHA_DESCR_FUNC_WORD  = 0;
-    localparam int SHA_DESCR_OP1_WORD   = 1;  // msg chunk (sch) or hash state (proc)
-    localparam int SHA_DESCR_OP2_WORD   = 2;  // schedule array (both functions)
+    localparam int SHA_DESCR_CTL_PROC_BIT = 28;  // 0=schedule, 1=process
 
     // SHA-256 state and schedule sizes
     localparam int SHA256_HASH_WORDS    = 8;    //  8 × 32-bit = 256-bit hash state
     localparam int SHA256_SCHED_WORDS   = 64;   // 64 × 32-bit message schedule
     localparam int SHA256_BLOCK_WORDS   = 16;   // 16 × 32-bit = 512-bit message block
+
+    // ---------------------------------------------------------------
+    // VU descriptor layout (in system memory, 4 × 32-bit words)
+    // Word 0: control word
+    //   [31:28] opcode (4-bit, see vu_opcode_e)
+    //   [24:16] dst operand length - 1 in 32-bit words (9-bit)
+    //   [15:8]  src1 operand length - 1 in 32-bit words (8-bit, 0 for unary ops)
+    //   [7:0]   src0 operand length - 1 in 32-bit words (8-bit)
+    // Word 1: 32-bit pointer to src operand 0 (LSB word first)
+    // Word 2: 32-bit pointer to src operand 1 (LSB first), or shift amount [12:0] for LSR
+    // Word 3: 32-bit pointer to destination operand (LSB word first)
+    // ---------------------------------------------------------------
+    localparam int VU_DESCR_CTL_WORD   = 0;
+    localparam int VU_DESCR_SRC0_WORD  = 1;
+    localparam int VU_DESCR_SRC1_WORD  = 2;
+    localparam int VU_DESCR_DST_WORD   = 3;
+
+    localparam int VU_CTL_OPC_HI       = 31;
+    localparam int VU_CTL_OPC_LO       = 28;
+    localparam int VU_CTL_DST_LEN_HI   = 24;
+    localparam int VU_CTL_DST_LEN_LO   = 16;
+    localparam int VU_CTL_SRC1_LEN_HI  = 15;
+    localparam int VU_CTL_SRC1_LEN_LO  = 8;
+    localparam int VU_CTL_SRC0_LEN_HI  = 7;
+    localparam int VU_CTL_SRC0_LEN_LO  = 0;
+
+    // VU opcodes (4-bit, VU_DESCR Word0[31:28])
+    typedef enum logic [3:0] {
+        VU_MUL      = 4'd0,   // dst = src0 × src1
+        VU_ADD      = 4'd1,   // dst = src0 + src1
+        VU_SUB      = 4'd2,   // dst = src0 - src1
+        VU_XOR      = 4'd3,   // dst = src0 ^ src1
+        VU_XMUL     = 4'd4,   // dst = src0 ×₂ src1 (GF(2^n) multiply)
+        VU_LSR1     = 4'd5,   // dst = src0 >> 1
+        VU_LSL1     = 4'd6,   // dst = src0 << 1
+        VU_LSR      = 4'd7,   // dst = src0 >> src1[12:0]
+        VU_COND_SUB = 4'd8,   // dst = (src0 >= src1) ? src0 - src1 : src0
+        VU_MOV      = 4'd9    // dst = src0
+    } vu_opcode_e;
 
     // ---------------------------------------------------------------
     // AHB-Lite constants (shared with AHB slave and master interfaces)
