@@ -34,3 +34,6 @@
 
 # Extracted PDF pages (generated)
 **/pdf_pages/
+
+# PDF conversion working directories
+**/spec/.convert_work/
