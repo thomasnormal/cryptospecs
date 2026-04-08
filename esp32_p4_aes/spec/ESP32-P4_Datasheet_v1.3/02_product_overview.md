@@ -4,7 +4,7 @@ ESP32-P4 is a high-performance MCU that supports large internal memory and has p
 
 The functional block diagram of the SoC is shown below. For more information on power consumption, see Section 4.1.4.6 Low-Power Management.
 
-![Figure 1-1: ESP32-P4 Functional Block Diagram](figures/figure-001.png)
+![Figure 1-1: ESP32-P4 Functional Block Diagram](figures/ch01_figure-001.png)
 
 ## Features
 

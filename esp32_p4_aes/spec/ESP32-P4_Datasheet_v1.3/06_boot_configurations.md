@@ -40,7 +40,7 @@ Table 3-2. Description of Timing Parameters for the Strapping Pins
 | tSU | Setup time is the time reserved for the power rails to stabilize before the CHIP_PU pin is pulled high to activate the chip. | 0 |
 | tH | Hold time is the time reserved for the chip to read the strapping pin values after CHIP_PU is already high and before these pins start operating as regular IO pins. | 3 |
 
-![Figure 3-1: Visualization of Timing Parameters for the Strapping Pins](figures/figure-031.png)
+![Figure 3-1: Visualization of Timing Parameters for the Strapping Pins](figures/ch04_figure-031.png)
 
 ## 3.1 Chip Boot Mode Control
 

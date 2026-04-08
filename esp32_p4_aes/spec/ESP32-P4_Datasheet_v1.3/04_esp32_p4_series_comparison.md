@@ -2,7 +2,7 @@
 
 ## 1.1 Nomenclature
 
-![Figure 1-1. ESP32-P4 Series Nomenclature](figures/figure-001.png)
+![Figure 1-1. ESP32-P4 Series Nomenclature](figures/ch02_figure-001.png)
 
 ## 1.2 Comparison
 
