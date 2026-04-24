@@ -59,10 +59,34 @@ verification work.
   TRNG Von Neumann mode
   TRNG repetition-count detection
   TRNG adaptive-proportion detection
-  vector-unit add
-  vector-unit multiply
+  vector-unit opcode coverage for move, add, subtract, xor, multiply, carry-less multiply, shift-right-by-1, shift-left-by-1, immediate shift-right, and conditional subtract
   interrupt/error propagation
   busy-time command blocking
+
+## Spec Coverage
+
+Approximate coverage of each project's public spec in RTL and UVM.
+
+| Project | RTL vs. spec | UVM vs. spec | Notable gap |
+|---------|--------------|--------------|-------------|
+| `esp32_p4_aes` | ~95% | ~85% | CFB8 declared in package but not implemented; GCM exercised only with the NIST empty-input vector |
+| `psoc6`        | ~80% (engines full; AEAD / cancel / context / key / feature-discovery / protection modules are stubs) | ~80% (stubs are unexercised) | AEAD orchestration, context/key management, protection unit |
+| `psoc_c3`      | ~100% | ~100% | None substantive |
+
+### `esp32_p4_aes`
+- **Spec**: AES-128/-256 (no -192), modes ECB/CBC/OFB/CTR/CFB8/CFB128/GCM, Typical (register) and DMA working modes, completion IRQ.
+- **RTL**: AES-128/256 cores with key expansion and forward/inverse rounds; ECB, CBC, OFB, CTR, CFB128, GCM (two-phase with GHASH / GF-mult); AHB-Lite slave and AXI4 master DMA. CFB8 is the conspicuous miss.
+- **UVM**: 16 regression tests — register smoke, Typical ECB 128/256, consecutive Typical, DMA ECB/CBC/OFB/CTR for 128 and 256, DMA CFB128 (128 only), GCM (empty-plaintext vector). Covergroups cross mode × key length × direction; AHB SVA; runs under VCS, Xcelium, and Questa.
+
+### `psoc6`
+- **Spec**: AES-128/256, DES/3DES, SHA-1 / SHA2-224/256/384/512 / SHA3, GCM, TRNG + health, PRNG, CRC-32, 16-register vector unit with large-integer arithmetic, instruction FIFO / descriptor dispatch, AHB slave and master.
+- **RTL** (~6.8 kLOC): cipher (AES, DES/3DES), hash (SHA-1, SHA2-256, SHA2-512, SHA3 Keccak), RNG (TRNG + health, PRNG, CRC-32), full six-module VU, instruction decoder, load/store FIFOs, register buffer, AHB slave/master, top-level orchestrator. Empty stubs: `aead_controller`, `cancel_logic`, `ctx_manager`, `feature_discovery`, `key_manager`, `protection_unit`.
+- **UVM**: 16 passing regression tests covering register smoke, AES-128-ECB and AES-256-CBC, AEAD-GCM, DES, 3DES, SHA-1/256/3-256, CRC-32, PRNG, TRNG, VU, cancel, error handling, and instruction-FIFO overflow. RAL, DPI reference models for each engine, AHB + IRQ agents, scoreboard, coverage.
+
+### `psoc_c3`
+- **Spec**: AES-128 ECB, SHA-256 schedule + process, TRNG with Von Neumann debiasing and repetition-count / adaptive-proportion health monitors, vector unit with 10 opcodes (MOV, ADD, SUB, XOR, XMUL, MUL, LSR1, LSL1, LSR-immediate, COND_SUB), descriptor-pointer programming model over AHB slave with AHB-master operand memory.
+- **RTL** (~2.1 kLOC): `aes_engine`, `sha_engine` (full 64-round SHA-256), `trng` (ring/GARO/FIRO oscillators + Von Neumann + RC + AP), `vu_engine` covering all 10 opcodes, 26-register MMIO file, AHB-slave + AHB-master top. No stubs.
+- **UVM**: 20 passing regression tests — AES-ECB; SHA-256 schedule / process / full; TRNG basic / VN / RC / AP; one test per VU opcode; interrupt/error; busy-time MMIO blocking.
 
 ## Layout
 
